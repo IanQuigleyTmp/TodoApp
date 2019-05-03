@@ -1,17 +1,14 @@
 ﻿using Data.Entity;
 using Data.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Logic
 {
     public class Authenticate
     {
-        public static bool User(string username, string password)
+        public static bool Validate(string username, string password)
         {
             return Repository.Select<Login>( 
                     Where.And( Where.EqualStr("Username", username), Where.EqualStr("Password", Encode(password))))

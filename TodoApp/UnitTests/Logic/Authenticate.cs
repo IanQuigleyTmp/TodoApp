@@ -19,7 +19,7 @@ namespace UnitTests
             Logic.Authenticate.Create("Dave", "Password");
 
             // Act        
-            var isAuthenticated = Logic.Authenticate.User("Dave", "Password");
+            var isAuthenticated = Logic.Authenticate.Validate("Dave", "Password");
             
             // Assert
             Assert.AreEqual(true, isAuthenticated);
@@ -32,7 +32,7 @@ namespace UnitTests
             Logic.Authenticate.Create("Dave", "Password");
 
             // Act        
-            var isAuthenticated = Logic.Authenticate.User("Dave", "Bad Guess!");
+            var isAuthenticated = Logic.Authenticate.Validate("Dave", "Bad Guess!");
 
             // Assert
             Assert.AreEqual(false, isAuthenticated);
