@@ -51,6 +51,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\AuthTokenTests.cs" />
     <Compile Include="Logic\Authenticate.cs" />
     <Compile Include="Data\LoginTests.cs" />
     <Compile Include="Data\TodoEntryTests.cs" />

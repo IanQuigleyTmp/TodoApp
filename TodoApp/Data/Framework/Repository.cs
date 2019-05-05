@@ -13,12 +13,13 @@ namespace Data.Framework
         internal static void InitializeSchema(SQLiteConnection connection)
         {
             ExecuteNonQuery(connection, $"CREATE TABLE {TableName<Login>()}     (ID INTEGER PRIMARY KEY autoincrement, Username Text, Password Text);");
-            ExecuteNonQuery(connection, $"CREATE TABLE {TableName<TodoEntry>()} (ID INTEGER PRIMARY KEY autoincrement, IsCompleted boolean, Description Text, LastUpdated date);");
+            ExecuteNonQuery(connection, $"CREATE TABLE {TableName<TodoEntry>()} (ID INTEGER PRIMARY KEY autoincrement, OwnerId INTEGER, IsCompleted boolean, Description Text, LastUpdated date);");
+            ExecuteNonQuery(connection, $"CREATE TABLE {TableName<AuthToken>()} (ID INTEGER PRIMARY KEY autoincrement, OwnerId INTEGER, Token Text);");
         }
 
-        public static List<IEntity> Select<T>(params SqlParameter[] where) where T : EntitySqlLite
+        public static List<T> Select<T>(params SqlParameter[] where) where T : EntitySqlLite
         {
-            var list = new List<IEntity>();
+            var list = new List<T>();
             var mapper = Activator.CreateInstance<T>().FromReader;
 
             var sql = $"SELECT * FROM {TableName<T>()}"; 
@@ -35,11 +36,27 @@ namespace Data.Framework
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    list.Add(mapper(reader));
+                    list.Add((T)mapper(reader));
                 }
             }
 
             return list;
+        }
+
+        public static void Delete<T>(params SqlParameter[] where) where T : EntitySqlLite
+        {            
+            var sql = $"DELETE FROM {TableName<T>()}";
+            if (where.Length > 0)
+                sql += " WHERE " + where[0].Where;
+
+            using (var command = new SQLiteCommand(sql, InMemoryDatabase.Instance))
+            {
+                if (where.Length > 0)
+                    foreach (var p in where[0].Parameters)
+                        command.Parameters.AddWithValue(p.Key, p.Value);
+
+                command.ExecuteNonQuery();
+            }
         }
 
         public static void SaveOrUpdate<T>(T entity) where T : EntitySqlLite

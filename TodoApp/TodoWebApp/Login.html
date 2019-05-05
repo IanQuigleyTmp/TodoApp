@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Todo app</title>
+    <link rel="stylesheet" href="main.css" />
+    <script src="Scripts/jquery-3.4.1.js"></script>
+    <script src="Scripts/todoApi.js"></script>
+    <script src="Scripts/todoApp.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+
+            todoApi.currentUser(with_user);
+            todoApp.buttonRequiresField($('#login_button'), $('.xx-login-form'));
+        });
+
+        do_login = function () {
+
+            // grab data from form inputs
+            var data = todoApp.dataFrom($('.xx-login-form'));
+
+            // Create new user
+            if ($('#new_user:checked').length == 1) {
+                todoApi.createUser(data, with_user);
+            } else {
+
+                // Or login existing user
+                todoApi.authenticate(data, with_user);
+            }
+        };
+        
+        with_user = function (user) {
+
+            if (user.is_authenticated) {
+                $('#authenticated').show();
+                $('#not_authenticated').hide();
+
+                $('#user_box').show();
+                $('#user_box').html('Hello ' + user.display_name + '. <a href="javascript:void(0)" onclick="todoApp.logout()">Logout</a>');
+            } else {
+                $('#user_box').hide();
+                $('#authenticated').hide();
+                $('#not_authenticated').show();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div id="user_box" ></div>
+        <h1>Todo Web Application</h1>
+    </div>
+
+    <div class="page">
+        <div id="authenticated" style="display:none">
+            <h3>You are authenticated.</h3>
+            <p>You can manage your <a href="todolist.html" class="hotlink">Todo List</a> now.</p>
+        </div>
+
+        <div id="not_authenticated">
+            <h3>You are not authenticated.</h3>
+
+            <table class="xx-login-form ui_inputform">
+                <tr><td class="title">Username </td><td><input type="text" id="username" class="xx-required-field" data-name="username" /></td></tr>
+                <tr><td class="title">Password</td><td><input type="password" id="password" class="xx-required-field" data-name="password" /></td></tr>
+                <tr>
+                    <td colspan="2" align="right">
+                        <span style="float:left"><input type="checkbox" id="new_user" /><label for="new_user">Create new user</label> </span>
+                        <input type="submit" onclick="do_login()" value="Login" disabled="disabled" id="login_button" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

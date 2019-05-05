@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="main.css" />
+    <script src="Scripts/jquery-3.4.1.js"></script>
+    <script src="Scripts/todoApi.js"></script>
+    <script src="Scripts/todoApp.js"></script>
+    <script src="Scripts/mustache.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            todoApi.currentUser(function (user) {
+
+                if (!user.is_authenticated) {
+                    $('#not_authenticated').show();
+                } else {
+
+                    $('#user_box').show();
+                    $('#user_box').html('Hello ' + user.display_name + '. <a href="javascript:void(0)" onclick="todoApp.logout()">Logout</a>');
+
+                    todoApi.getAll(display_list);
+
+                    $('#create-button').on('click', function () {
+
+                        var data = todoApp.dataFrom($('#create'));
+                        todoApi.createTodo(data, display_list);
+                    });
+
+                    todoApp.buttonRequiresField($('#create-button'), $('#create'));
+                }
+            });
+
+        });
+
+
+        display_list = function (list) {
+
+            if (typeof list == "object")
+                for (var idx = 0; idx < list.length; idx++)
+                    list[idx].last_updated = new Date(list[idx].last_updated);
+
+            $('#list').html(Mustache.to_html($('#todo_list').html(), { data: list }));
+            $('#create').show();
+
+            $('#list .xx-completed').on('click', function (e) {
+
+                var $elem = $(e.currentTarget);
+                todoApi.updateTodo({ id: $elem.data('id'), is_completed: e.currentTarget.checked }, display_list);
+            });
+        };
+
+
+    </script>
+</head>
+<body>
+
+    <div class="header">
+        <div id="user_box"></div>
+        <h1>Todo Web Application</h1>
+    </div>
+
+    <div class="page">
+        <div id="not_authenticated" style="display:none">
+            <h3>You are not authenticated.</h3>
+            <p>Please return to the <a href="login.html" class="hotlink">Login Page</a>.</p>
+        </div>
+
+        <div id="list"></div>
+
+        <div id="create" style="display:none" class="gap-above">
+
+            <h3>Create new todo</h3>
+            <table style="border: 1px solid #ccc" class="xx-login-form ui_inputform">
+                <tr><td class="title">Description</td><td><input type="text" id="username" class="xx-required-field" data-name="description" /></td></tr>
+                <tr><td class="title">Is Completed</td><td><input type="checkbox" id="is_completed" data-name="is_completed" /></td></tr>
+                <tr><td colspan="2" align="right"> <input type="submit" id="create-button" value="Create Todo" disabled="disabled" /></td></tr>
+            </table>
+        </div>
+
+    </div>
+
+
+</body>
+
+<script id="todo_list" type="text/x-custom-template">
+    {{#data.length}}
+    <table class="display">
+        <tr><th>Is Completed</th><th>Description</th><th>Last Updated</th><th></th></tr>
+        {{#data}}
+        <tr><td><input type="checkbox" class="xx-completed" {{#is_completed}} checked="checked" {{/is_completed}} data-id="{{id}}" /></td><td>{{{description}}}</td><td>{{last_updated}}</td><td><a href="javascript:void(0)" onclick="todoApi.deleteTodo({{id}}, display_list)">Delete</a></td></tr>
+        {{/data}}
+    </table>
+    {{/data.length}}
+</script>
+</html>

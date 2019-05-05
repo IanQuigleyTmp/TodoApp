@@ -1,4 +1,5 @@
-﻿using Logic;
+﻿using Data.Framework;
+using Logic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,12 @@ namespace UnitTests
     [TestClass]
     public class Authenticate
     {
+        [TestInitialize]
+        public void Initialze()
+        {
+            InMemoryDatabase.EraseAll();
+        }
+
         [TestMethod]
         public void LoginAuthenticated()
         {
@@ -19,10 +26,11 @@ namespace UnitTests
             Logic.Authenticate.Create("Dave", "Password");
 
             // Act        
-            var isAuthenticated = Logic.Authenticate.Validate("Dave", "Password");
-            
+            var authToken = Logic.Authenticate.GetTokenFor("Dave", "Password");
+
             // Assert
-            Assert.AreEqual(true, isAuthenticated);
+            Assert.IsNotNull(authToken);
+            Assert.IsTrue(Logic.Authenticate.OwnerId(authToken) > 0);
         }
 
         [TestMethod]
@@ -32,10 +40,22 @@ namespace UnitTests
             Logic.Authenticate.Create("Dave", "Password");
 
             // Act        
-            var isAuthenticated = Logic.Authenticate.Validate("Dave", "Bad Guess!");
+            var authToken = Logic.Authenticate.GetTokenFor("Dave", "Bad Guess!");
 
             // Assert
-            Assert.AreEqual(false, isAuthenticated);
+            Assert.IsNull(authToken);
+        }
+
+        [TestMethod]
+        public void CannotCreateDuplicate()
+        {
+            // Act
+            var dave1 = Logic.Authenticate.Create("Dave", "Password");
+            var dave2 = Logic.Authenticate.Create("Dave", "Password");
+
+            // Assert
+            Assert.IsNotNull(dave1);
+            Assert.IsNull(dave2);
         }
 
     }

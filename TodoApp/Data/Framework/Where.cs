@@ -31,5 +31,12 @@ namespace Data.Framework
             param.Parameters.Add(new KeyValuePair<string, object>(field, value));
             return param;
         }
+
+        public static SqlParameter EqualLong(string field, long value)
+        {
+            var param = new SqlParameter() { Where = $"{field} = @{field}" };
+            param.Parameters.Add(new KeyValuePair<string, object>(field, value));
+            return param;
+        }
     }
 }

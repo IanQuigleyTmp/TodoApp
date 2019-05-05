@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\AuthToken.cs" />
     <Compile Include="Entity\Login.cs" />
     <Compile Include="Entity\TodoEntry.cs" />
     <Compile Include="Framework\IEntity.cs" />

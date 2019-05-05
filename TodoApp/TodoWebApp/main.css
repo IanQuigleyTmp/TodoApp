@@ -1,0 +1,100 @@
+﻿* {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin:0;
+    padding: 0;
+}
+body {
+}
+
+.header  {
+    background: #def;
+    padding: 20px;
+    border-bottom: 2px solid #085cb0;
+    margin-bottom: 20px;
+}
+
+.header #user_box {
+    float: right;
+    border: 2px solid #ff6a00;
+    margin-right: 20px;
+    padding: 5px 20px 5px 20px;
+    display: none;
+    background: #faeca3;
+}
+
+.header #user_box a {
+    text-decoration: none;
+    background: #085cb0;
+    padding: 2px 8px;
+    color: #fff;
+}
+
+.page {
+    width: 70%;
+    margin: 0 auto;
+}
+
+table.ui_inputform {
+    padding: 2px 20px;
+    background: #def;
+    border: 2px solid #ccc;
+}
+
+    table.ui_inputform tr td.title {
+        background: #bbd4ed;
+        text-align: right;
+    }
+table.ui_inputform tr td {
+    padding: 3px;
+}
+
+    table.ui_inputform input[type=submit] {
+        background: #085cb0;
+        color: #fff;
+        border: 1px solid #1c410e;
+        padding: 3px 14px;
+        border-radius: 5px;
+        box-shadow: inset -2px -2px 2px #074685, inset 2px 2px 2px #3a8ad9;
+    }
+
+        table.ui_inputform input[type=submit]:disabled {
+            background: #a7acb2;
+            color: #ddd;
+            border: 1px solid #676767;
+            padding: 3px 14px;
+            box-shadow:none;
+        }
+
+.gap-above { margin-top: 20px; }
+
+
+.hotlink {
+    background: #ff6a00;
+    color:#fff;
+    padding: 0px 6px;
+}
+
+.hotlink:hover {
+    color: #ff6a00;
+    background: #fff;
+}
+
+
+table.display {
+    border: 2px solid #ccc;
+}
+
+table.display tr th { background: #def;}
+
+table.display tr th, table.display tr td {
+    padding: 2px 5px;
+}
+
+    table.display tr {
+        background: #f3f3f3;
+    }
+    
+    table.display tr:nth-child(2n+1) {
+        background: #ffc;
+    }
+
