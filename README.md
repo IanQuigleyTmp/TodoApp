@@ -1,5 +1,7 @@
 # TodoApp
 
+See also Application Notes... [https://github.com/IanQuigleyTmp/TodoApp/blob/master/TodoApp/Application_Notes.txt]
+
 ## Notes
 1. Compile with Visual Studio 2017
 
