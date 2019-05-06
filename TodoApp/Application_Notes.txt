@@ -1,1 +1,55 @@
 Application notes
+
+In Brief; the application is split into the following 5 projects;
+
+1. Data - the data layer of the application. Contains Entities, Repository and the mechanism required to persist data in-memory.
+2. Logic - a business logic layer which has a dependancy on the Data layer. Currently this layer is very thin, and given time/effort none of the Todo logic is handled here. However, the Password encryption and verification is performed at the logic layer it is the responsiblity of the logic layer, and not the application nor data layers.
+3. Service - A RESTful web api, which should do minimal verification and handling and should not be performing any buiness logic. The Service layer is the outer-most public facing layer of the "back-end" of the application.
+4. TodoApp - A thin, HTML and Javascript only web application the provides a public front-end to the application (for development speed, this is actually an ASP.NET application, but it only has .html and .js files). The Web application has no knowledge of the internals of the application and only calls the service layer.
+5. Unit tests - One of my first commits on Friday night was the Data layer and the Unit Tests, as this was roughly test-driven development. Once I had the Data layer and Unit tests, I knew I had the basics done. For speed I've used MsTest but preference would be for nUnit.
+
+In Detail
+
+Data project - the specification calls for "in memory" database. I wasn't sure if this meant Redis, some NoSql document DB or if it was possible to have Entity Framework pretend there was an in-memory instance of SQL Server. I went with what I know, so am using SQLite, which allows for in-memory instance. 
+
+Next I needed an ORM for the database. I've writen my own a few times and given that the application probably only needs 2 tables at best, I decided to write my own. I did spend about an hour trying to figure out how to marry Entity Framework with an in-memory instance of SQLite, but I wanted my data layer working before end-of-day Friday. I wrote my own ORM, which is one of many dirty short-cuts. All input SQL variables are parameterized.
+
+Things I like about the Data project; POCO Entites. Respository is pretty slick. I like the Where.cs file and writing code in a higher layer like;  var list = Repository.Select<TodoEntry>(Where.EqualLong("OwnerId", user.Id));  I did plan to add Sort, Page and Ordering by expaning on the Where class and I would go with an Expression Builder rather than several horrid "switch (sortOrder) case..." type solution.
+
+Layer project - there isn't much to say, but then there is a lot to say about this layer. Logic layers should be designed with seperation of concerns very much in mind. What belongs in Logic and what belongs in Data. 
+
+Service project - this layer should only concern itself with Authorization, External vulnerablities and should pass all logic on to the logic layer. All user inputs should be sanitized. There are many things wrong with the current implementation that I have. Mainly it calls the Data layer directly. It verifies the auth-token directly with the database, when that "ownership of session control" should be at the Logic layer. It has no unit-tests, and should have scenario/integration tests into API layer. It have very basic sanitization of inputs. It has no protection against Brute Force password guessing. It is wide open for CORS.
+
+Things I like about the Logic & Service Layer - I wanted to mimick OAuth in the stateless REST API, so a username & password results in an "auth token". In my version, this never expires and is a Guid string (should be stronger). It gives scope to short-lived tokens, which are more secure. Auth-token is looked up from the database, but in a real application a much quicker solution would be provided (also secure data at rest should be encrypted). The REST API follows typical, get, post, delete, patch verbs, and talks Json. I quite like the code in Logic.BasicData.Create.
+
+TodoApp - thin html & javascript application. Uses Javascript name spaces todoApi & todoApp. I do have code in the .html pages, but time was against me, and also using jQuery because it's the simplest library I'm familiar with. Uses Mustache to combine Json with Html template (look at the todo list html render). This is an ASP.NET application but it really has no need for the code behind as everything is Javascript to Service layer. Would have been nice to use LESS and a nicer UI but my design skills are awful so didn't go down that route, but I did manage to avoid in-line styles.
+
+Unit tests - I only wrote a few and left it at that. The "update entity" tests are not-deterministic, since it assumes that rows 0 & 1 returned are in the order they were created. All tests follow AAA. Would be nice to use a pseudo-random text fixture to generate. Would be nice to use nUnit an easily generate 100's of tests.
+
+Comments on the specification;
+"User can sign in .. securely" this troubled me greatly. IIS Express out-of-the-box is not configured for SSL, and then would need to be at least TLS 1.2. The password should be salted and have a better hashing algorithm. There is no protection for lock-out on multiple failed authentications. Specification requests an easily guessable password. My solution is far from secure.
+
+User can list/add/remove taks - done.
+
+All changes can be persistant - done. You can create a new user and switch between accounts. Also replace "datasource=:inmemory:" to a filepath on your machine and the database will persist forver.
+
+Each task displays description and last update - done. Click the 'is complete' check-box to see the date update on the row.
+
+User can check / uncheck - done.
+
+"Consider performace"... The web front end is static html, so could be served very quickly from a CDN etc. Upon login, a user could be redirected to a different scalable stateless Rest service.
+
+"Anything extra you would have done given more time"... so much, but it is past midnight.
+
+
+
+
+
+
+
+
+
+
+
+
+
