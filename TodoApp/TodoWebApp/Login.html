@@ -7,7 +7,7 @@
     <script src="Scripts/jquery-3.4.1.js"></script>
     <script src="Scripts/todoApi.js"></script>
     <script src="Scripts/todoApp.js"></script>
-
+    <script src="Scripts/mustache.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -30,7 +30,7 @@
                 todoApi.authenticate(data, with_user);
             }
         };
-        
+
         with_user = function (user) {
 
             if (user.is_authenticated) {
@@ -38,7 +38,7 @@
                 $('#not_authenticated').hide();
 
                 $('#user_box').show();
-                $('#user_box').html('Hello ' + user.display_name + '. <a href="javascript:void(0)" onclick="todoApp.logout()">Logout</a>');
+                $('#user_box').html(Mustache.to_html($('#user_box_template').html(), user ));                
             } else {
                 $('#user_box').hide();
                 $('#authenticated').hide();
@@ -49,7 +49,7 @@
 </head>
 <body>
     <div class="header">
-        <div id="user_box" ></div>
+        <div id="user_box"></div>
         <h1>Todo Web Application</h1>
     </div>
 
@@ -74,5 +74,12 @@
             </table>
         </div>
     </div>
+
+    <script id="user_box_template" type="text/x-custom-template">
+        
+        Hello {{{display_name}}}.
+        <a href="javascript:void(0)" onclick="todoApp.logout()">Logout</a>
+        
+    </script>
 </body>
 </html>

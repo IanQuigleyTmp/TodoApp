@@ -19,7 +19,7 @@
                 } else {
 
                     $('#user_box').show();
-                    $('#user_box').html('Hello ' + user.display_name + '. <a href="javascript:void(0)" onclick="todoApp.logout()">Logout</a>');
+                    $('#user_box').html(Mustache.to_html($('#user_box_template').html(), user));
 
                     todoApi.getAll(display_list);
 
@@ -42,7 +42,7 @@
                 for (var idx = 0; idx < list.length; idx++)
                     list[idx].last_updated = new Date(list[idx].last_updated);
 
-            $('#list').html(Mustache.to_html($('#todo_list').html(), { data: list }));
+            $('#list').html(Mustache.to_html($('#list_template').html(), { data: list }));
             $('#create').show();
 
             $('#list .xx-completed').on('click', function (e) {
@@ -83,16 +83,19 @@
     </div>
 
 
+    <script id="list_template" type="text/x-custom-template">
+        {{#data.length}}
+        <table class="display">
+            <tr><th>Is Completed</th><th>Description</th><th>Last Updated</th><th></th></tr>
+            {{#data}}
+            <tr><td><input type="checkbox" class="xx-completed" {{#is_completed}} checked="checked" {{/is_completed}} data-id="{{id}}" /></td><td>{{{description}}}</td><td>{{last_updated}}</td><td><a href="javascript:void(0)" onclick="todoApi.deleteTodo({{id}}, display_list)">Delete</a></td></tr>
+            {{/data}}
+        </table>
+        {{/data.length}}
+    </script>
+    <script id="user_box_template" type="text/x-custom-template">
+        Hello {{{display_name}}}.
+        <a href="javascript:void(0)" onclick="todoApp.logout()">Logout</a>
+    </script>
 </body>
-
-<script id="todo_list" type="text/x-custom-template">
-    {{#data.length}}
-    <table class="display">
-        <tr><th>Is Completed</th><th>Description</th><th>Last Updated</th><th></th></tr>
-        {{#data}}
-        <tr><td><input type="checkbox" class="xx-completed" {{#is_completed}} checked="checked" {{/is_completed}} data-id="{{id}}" /></td><td>{{{description}}}</td><td>{{last_updated}}</td><td><a href="javascript:void(0)" onclick="todoApi.deleteTodo({{id}}, display_list)">Delete</a></td></tr>
-        {{/data}}
-    </table>
-    {{/data.length}}
-</script>
 </html>

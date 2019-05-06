@@ -85,7 +85,7 @@ namespace Service.Controllers
             // Sanitize user inputs
             if (!AcceptableString(credentials.Username) || !AcceptableString(credentials.Password))
                 return null;
-
+            
             return credentials;
         }
 
