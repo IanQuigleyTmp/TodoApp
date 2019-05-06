@@ -39,8 +39,10 @@
         display_list = function (list) {
 
             if (typeof list == "object")
-                for (var idx = 0; idx < list.length; idx++)
-                    list[idx].last_updated = new Date(list[idx].last_updated);
+                for (var idx = 0; idx < list.length; idx++) {
+                    todoApp.addDateFields(list[idx], list[idx].last_updated * 1);
+                    //list[idx].last_updated = new Date(list[idx].last_updated);                    
+                }
 
             $('#list').html(Mustache.to_html($('#list_template').html(), { data: list }));
             $('#create').show();
@@ -88,7 +90,12 @@
         <table class="display">
             <tr><th>Is Completed</th><th>Description</th><th>Last Updated</th><th></th></tr>
             {{#data}}
-            <tr><td><input type="checkbox" class="xx-completed" {{#is_completed}} checked="checked" {{/is_completed}} data-id="{{id}}" /></td><td>{{{description}}}</td><td>{{last_updated}}</td><td><a href="javascript:void(0)" onclick="todoApi.deleteTodo({{id}}, display_list)">Delete</a></td></tr>
+                <tr>
+                    <td><input type="checkbox" class="xx-completed" {{#is_completed}} checked="checked" {{/is_completed}} data-id="{{id}}" /></td>
+                    <td>{{{description}}}</td>
+                    <td>{{dayName}} {{date}}{{dateTH}} {{monthNameShort}}, {{hour}}:{{minute}}.{{seconds}}</td>
+                    <td><a href="javascript:void(0)" onclick="todoApi.deleteTodo({{id}}, display_list)">Delete</a></td>
+                </tr>
             {{/data}}
         </table>
         {{/data.length}}
