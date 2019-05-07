@@ -14,7 +14,7 @@ Data project - the specification calls for "in memory" database. I wasn't sure i
 
 Next I needed an ORM for the database. I've writen my own a few times and given that the application probably only needs 2 tables at best, I decided to write my own. I did spend about an hour trying to figure out how to marry Entity Framework with an in-memory instance of SQLite, but I wanted my data layer working before end-of-day Friday. I wrote my own ORM, which is one of many dirty short-cuts. All input SQL variables are parameterized.
 
-Things I like about the Data project; POCO Entites. Respository is pretty slick. I like the Where.cs file and writing code in a higher layer like;  var list = Repository.Select<TodoEntry>(Where.EqualLong("OwnerId", user.Id));  I did plan to add Sort, Page and Ordering by expaning on the Where class and I would go with an Expression Builder rather than several horrid "switch (sortOrder) case..." type solution.
+Things I like about the Data project; POCO Entites. Respository is pretty slick & entity agnostic. I like the Where.cs file and writing code in a higher layer like;  var list = Repository.Select<TodoEntry>(Where.EqualLong("OwnerId", user.Id));  I did plan to add Sort, Page and Ordering by expaning on the Where class and I would go with an Expression Builder rather than several horrid "switch (sortOrder) case..." type solution.
 
 Layer project - there isn't much to say, but then there is a lot to say about this layer. Logic layers should be designed with seperation of concerns very much in mind. What belongs in Logic and what belongs in Data. LoginCredentials requires two strings, less than 100 characters and does not contain <> (black listing), it should white-list acceptable characters and password strength.
 
