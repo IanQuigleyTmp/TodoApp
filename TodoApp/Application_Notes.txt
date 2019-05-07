@@ -39,7 +39,7 @@ User can check / uncheck - done.
 
 "Consider performace"... The web front end is static html, so could be served very quickly from a CDN etc. Upon login, a user could be redirected to a different scalable stateless Rest service.
 
-"Anything extra you would have done given more time"... so much, but it is past midnight.
+"Anything extra you would have done given more time", next things would be; sort, paging, ordering and filtering of the list. Editing items. Share-able items (joint owners, roles, public link to item). Edit history. Scenario tests with Service layer API. Design for IOC, mocking and unit test service and logic layers. Better UX. Automated build, test and deploy in Team City. 
 
 
 
